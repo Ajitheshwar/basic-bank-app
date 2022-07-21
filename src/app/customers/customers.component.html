@@ -1,0 +1,68 @@
+<div class="p-3">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped table-light">
+            <thead class="bg-dark text-center text-light">
+                <th class=" py-3" style="font-weight : 500">#</th>
+                <th class=" py-3" style="font-weight : 500">Name</th>
+                <th class=" py-3" style="font-weight : 500">E-mail</th>
+                <th class=" py-3" style="font-weight : 500">Balance</th>
+                <th class=" py-3" style="font-weight : 500">Transfer</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let c of customers; index as i">
+                    <td style="vertical-align : middle" class="text-center">{{i}}</td>
+                    <td style="vertical-align : middle">{{c.name}}</td>
+                    <td style="vertical-align : middle">{{c.email}}</td>
+                    <td style="vertical-align : middle">{{c.balance}}</td>
+                    <td class="text-center"><button id="{{i}}" class="btn btn-outline-dark px-4 py-2" (click)="scrollToBottom(i)"> Transfer</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div *ngIf="allowTransfer" class="mx-auto px-4 my-3" style="max-width : 600px">
+    <h2 class="text-center mb-4">Transfer Money</h2>
+    <form #ref="ngForm" (ngSubmit)="ref.valid && submitForm(ref)">
+        <div class="row mb-3">
+            <div class="col-12 col-sm-2">    
+                <label for="from" class="form-label">Sender</label>
+            </div>
+            <div class="col-12 col-sm-10">
+                <input type="text" id="from" name="from" class="form-control" value="{{customers[custId].name}}" disabled>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12 col-sm-2">    
+                <label for="balance" class="form-label">Balance</label>
+            </div>
+            <div class="col-12 col-sm-10">
+                <input type="number" value="{{customers[custId].balance}}" id="balance" name="balance" class="form-control" disabled>
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-12 col-sm-2">    
+                <label for="to" class="form-label">Receiver</label>
+            </div>
+            <div class="col-12 col-sm-10">
+                <select name="to" id="to" class="form-control" ngModel required autocomplete="off" #refTo="ngModel">
+                    <option disabled selected value=""></option>
+                    <option *ngFor="let c of cs;index as i" value="{{c.i}}"> {{c.name}}</option>
+                </select>
+                <p class="text-danger" *ngIf="(ref.submitted || refTo.touched) && refTo.errors?.['required']">*Receiver is required</p>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12 col-sm-2">    
+                <label for="amount" class="form-label">Amount</label>
+            </div>
+            <div class="col-12 col-sm-10">
+                <input type="number" id="amount" name="amount" class="form-control" step="100"  ngModel required autocomplete="off" #refAmount="ngModel">
+                <p class="text-danger" *ngIf="(ref.submitted || refAmount.touched) && refAmount.errors?.['required']">*Amount is required</p>
+            </div>
+        </div>
+        <p *ngIf="showLowBalance" class="mb-3 bg-dark text-white text-center px-3 rounded py-2">{{showText}}</p>
+        <button type="submit" class="btn btn-outline-dark px-4 rounded-pill d-block mx-auto"> Transfer</button>
+    </form>
+</div>
+<div id="view"></div>
